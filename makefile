@@ -1,4 +1,4 @@
-.PHONY: all tidy test build run install clean
+.PHONY: all tidy test build run install clean quiz
 
 all: tidy test build run install
 
@@ -20,3 +20,6 @@ install:
 
 clean:
 	cd ./hello && go clean
+
+quiz:
+	cd ./quiz && go run quiz

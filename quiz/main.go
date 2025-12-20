@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 func main() {
 
 	csvFilename := flag.String("f", "problems.csv", "file containing quiz problems")
-	timeLimit := flag.Int("t", 30, "quiz timer")
+	// timeLimit := flag.Int("t", 30, "quiz timer")
 	flag.Parse()
 
 	file, err := os.Open(*csvFilename)
@@ -32,7 +31,7 @@ func main() {
 
 	challenges := parseQuestions(questions)
 
-	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
+	// timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
 	score := 0
 	input := ""
 
