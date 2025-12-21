@@ -6,21 +6,19 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
 
-	csvFilename := flag.String("f", "problems.csv", "file containing quiz problems")
-	// timeLimit := flag.Int("t", 30, "quiz timer")
+	csvFile := flag.String("f", "problems.csv", "file containing quiz problems")
+	timeLimit := flag.Int("t", 30, "quiz timer")
 	flag.Parse()
 
-	file, err := os.Open(*csvFilename)
-
+	file, err := os.Open(*csvFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	defer file.Close()
 
 	reader := csv.NewReader(file)
 
@@ -31,15 +29,23 @@ func main() {
 
 	challenges := parseQuestions(questions)
 
-	// timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
+	timer := time.NewTimer(time.Duration(*timeLimit) * time.Second)
 	score := 0
 	input := ""
 
 	for _, challenge := range challenges {
 		fmt.Print(challenge.q, "= ")
 		fmt.Scan(&input)
-		if input == challenge.a {
-			score++
+
+		select {
+		case <-timer.C:
+			fmt.Println("\nTime's up!")
+			fmt.Printf("You scored %d out of %d.\n", score, len(challenges))
+			return
+		default:
+			if input == challenge.a {
+				score++
+			}
 		}
 	}
 	fmt.Printf("Well done! You scored %d out of %d.\n", score, len(challenges))
