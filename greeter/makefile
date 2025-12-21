@@ -20,6 +20,3 @@ install:
 
 clean:
 	cd ./hello && go clean
-
-quiz:
-	cd ./quiz && go run quiz
