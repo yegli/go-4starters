@@ -9,4 +9,5 @@ A small two module greeting app to get into golang build system and basic testin
 A quiz game to get into reading and parsing basic csv and interact with user inputs through a cli component. To execute the program run `make quiz`from the root of this repository.
 
 ## chatroom
-A small server client architecture using a basic tcp socket to send and receive basic unencrypted text messages. Intended to be further improved to serve as a p2p symmetrical communication channel.
+A small server client architecture using a basic tcp socket to send and receive basic unencrypted text messages.
+> Further improved to allow for bidirectional sending and receiving of messages
