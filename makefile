@@ -1,4 +1,4 @@
-.PHONY: greeter quiz calculator
+.PHONY: greeter quiz calculator chatroom
 
 greeter:
 	cd ./greeter && $(MAKE) all
@@ -8,3 +8,6 @@ quiz:
 
 calculator:
 	cd ./calculator && $(MAKE) all
+
+chatroom:
+	cd ./chatroom && $(MAKE) all
