@@ -5,6 +5,12 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"sync"
+)
+
+var (
+	conns []net.Conn
+	mu    sync.Mutex // required to prevent concurrent slice access
 )
 
 func main() {
@@ -14,19 +20,33 @@ func main() {
 		panic(err)
 	}
 
+	go writeToConn()
+
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
-			return
+			continue
 		}
+
+		mu.Lock()
+		conns = append(conns, conn)
+		mu.Unlock()
 
 		go handleConn(conn)
 	}
 }
 
 func handleConn(conn net.Conn) {
-	go readFromConn(conn)
-	writeToConn(conn)
+	readFromConn(conn)
+	mu.Lock()
+	for i, c := range conns {
+		if c == conn {
+			conns = append(conns[:i], conns[i+1:]...)
+			break
+		}
+	}
+	mu.Unlock()
+	conn.Close()
 }
 
 func readFromConn(conn net.Conn) {
@@ -40,13 +60,18 @@ func readFromConn(conn net.Conn) {
 	}
 }
 
-func writeToConn(conn net.Conn) {
+func writeToConn() {
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		text, err := reader.ReadString('\n')
 		if err != nil {
 			return
 		}
-		conn.Write([]byte("> " + text))
+
+		mu.Lock()
+		for _, c := range conns {
+			c.Write([]byte("> " + text))
+		}
+		mu.Unlock()
 	}
 }
